@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
+    <title>Para Belu 💜</title>
+    <style>
+        :root {
+            --primary: #ffd60a;
+            --accent: #9d4edd;
+        }
+
+        body {
+            margin: 0;
+            overflow: hidden;
+            font-family: 'Segoe UI', Georgia, serif;
+            background: linear-gradient(to top, #ff7e5f, #feb47b, #ffd194);
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: background 4s ease;
+            touch-action: manipulation;
+        }
+
+        .sun {
+            position: absolute;
+            top: 10%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 90px;
+            height: 90px;
+            border-radius: 50%;
+            background: radial-gradient(circle, #fff3b0, #ffae00);
+            box-shadow: 0 0 40px #ffae00;
+            z-index: 1;
+            transition: top 20s linear;
+        }
+
+        .gift-container {
+            position: relative;
+            z-index: 10;
+            text-align: center;
+        }
+
+        .gift {
+            width: 120px;
+            height: 120px;
+            background: var(--primary);
+            border-radius: 12px;
+            cursor: pointer;
+            position: relative;
+            margin: 0 auto;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        }
+
+        .lid {
+            position: absolute;
+            top: -25px;
+            width: 130px;
+            left: -5px;
+            height: 35px;
+            background: var(--primary);
+            border-radius: 8px;
+            transition: transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            z-index: 11;
+        }
+
+        .ribbon {
+            position: absolute;
+            width: 25px;
+            height: 100%;
+            background: purple;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .bow {
+            position: absolute;
+            top: -45px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 45px;
+        }
+
+        .message {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 85%;
+            max-width: 450px;
+            max-height: 75vh;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(12px);
+            color: white;
+            padding: 30px;
+            border-radius: 25px;
+            display: none;
+            overflow-y: auto;
+            text-align: center;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.4);
+            border: 1px solid rgba(255,255,255,0.1);
+            z-index: 20;
+        }
+
+        .name {
+            font-size: 28px;
+            font-weight: bold;
+            color: #ffde59;
+            margin-bottom: 20px;
+            text-shadow: 0 0 10px rgba(255, 222, 89, 0.5);
+        }
+
+        #text {
+            font-size: 18px;
+            line-height: 1.7;
+            white-space: pre-wrap;
+        }
+
+        .petal {
+            position: absolute;
+            pointer-events: none;
+            z-index: 5;
+            animation: fall linear infinite;
+        }
+
+        @keyframes fall {
+            0% { transform: translateY(-10vh) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(110vh) rotate(360deg); opacity: 0; }
+        }
+
+        .heart {
+            position: absolute;
+            pointer-events: none;
+            animation: float 1.5s ease-out forwards;
+            z-index: 30;
+        }
+
+        @keyframes float {
+            to { transform: translateY(-100px) scale(1.5); opacity: 0; }
+        }
+
+        .message::-webkit-scrollbar { width: 5px; }
+        .message::-webkit-scrollbar-thumb { background: #9d4edd; border-radius: 10px; }
+    </style>
+</head>
+<body>
+
+    <div class="sun" id="sun"></div>
+
+    <div class="gift-container" id="container">
+        <div class="gift" id="gift">
+            <div class="lid" id="lid"></div>
+            <div class="ribbon"></div>
+            <div class="bow">🎀</div>
+        </div>
+        <p style="color: white; margin-top: 25px; font-weight: bold; text-shadow: 1px 1px 3px rgba(0,0,0,0.5);">Haz clic aquí, Belu...</p>
+    </div>
+
+    <div class="message" id="message">
+        <div class="name">Belu 💜</div>
+        <div id="text"></div>
+    </div>
+
+    <audio id="music" src="audio.mp3" loop></audio>
+
+<script>
+    const gift = document.getElementById('gift');
+    const lid = document.getElementById('lid');
+    const message = document.getElementById('message');
+    const textEl = document.getElementById('text');
+    const music = document.getElementById('music');
+    const container = document.getElementById('container');
+    const sun = document.getElementById('sun');
+
+    const poema = `Belu, ha pasado el tiempo y siempre estuve pensando en vos... 
+
+No te mentía cuando dije que te amaba con todo el corazón. Por más que intente seguir adelante, siempre recordaba ese lugar seguro y tranquilo en donde está el hermoso árbol bugambilia que siempre imaginé a tu lado. 
+
+Sabes que todas serán flores moradas que nunca me llegarán como vos y a la final me dio un miedo al futuro... creo que inventé el nombre de esta enfermedad ficticia "futurofobia".
+
+Es el pánico a un mañana donde vos no estés presente, porque mi futuro no es futuro si no estás aquí. Sé que a veces tenemos que pegar volantazos, pero si conseguimos unir todos los pedazos, tendremos la obra más bonita en nuestro regazo... y la guardaremos para siempre con un solo abrazo. 💛`;
+
+    function typeWriter(text, i = 0) {
+        if (i < text.length) {
+            textEl.innerHTML += text[i];
+            message.scrollTop = message.scrollHeight; 
+            setTimeout(() => typeWriter(text, i + 1), 35);
+        }
+    }
+
+    function createPetal() {
+        const p = document.createElement('div');
+        p.className = 'petal';
+        const flowers = ['💜', '🌸', '🌺', '🌼', '✨'];
+        p.innerText = flowers[Math.floor(Math.random() * flowers.length)];
+        p.style.left = Math.random() * 100 + "vw";
+        p.style.fontSize = (Math.random() * 15 + 15) + "px";
+        p.style.animationDuration = (Math.random() * 3 + 4) + "s";
+        document.body.appendChild(p);
+        setTimeout(() => p.remove(), 7000);
+    }
+
+    setInterval(createPetal, 300);
+
+    gift.addEventListener('click', () => {
+        lid.style.transform = 'translateY(-120px) rotate(-20deg)';
+        lid.style.opacity = '0';
+        sun.style.top = '70%'; 
+        
+        setTimeout(() => {
+            container.style.display = 'none';
+            message.style.display = 'block';
+            document.body.style.background = "linear-gradient(to bottom, #2c3e50, #000000)"; 
+            
+            music.play().catch(e => console.log("Audio iniciado"));
+            typeWriter(poema);
+        }, 900);
+    });
+
+    document.addEventListener('touchstart', (e) => {
+        const h = document.createElement('div');
+        h.className = 'heart';
+        h.innerText = '💜';
+        h.style.left = e.touches[0].clientX + 'px';
+        h.style.top = e.touches[0].clientY + 'px';
+        document.body.appendChild(h);
+        setTimeout(() => h.remove(), 1000);
+    });
+</script>
+</body>
+</html>
